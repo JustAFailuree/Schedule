@@ -1,0 +1,62 @@
+:root{
+  --ColorGrad1: #1A1A1D;
+  --ColorGrad2: #3B1C32;
+  --ColorGrad3: #6A1E55;
+  --ColorGrad4: #A64D79;
+}
+
+body {
+margin: 0;
+background-image: url('../images/back.jpg');
+
+background-size: cover;
+background-position: center;
+}
+
+.login-container {
+height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+position: relative;
+}
+
+.label, .title {
+color: white;
+}
+
+a {
+color: var(--ColorGrad3);
+}
+
+.box {
+width: 80vw;
+max-width: 400px;
+padding: 2rem;
+background: linear-gradient(to top, var(--ColorGrad1), var(--ColorGrad2));
+box-shadow: 10px 20px 20px black;
+color: white;
+}
+
+.box .button {
+color: white;
+background: linear-gradient(to left, var(--ColorGrad4), var(--ColorGrad3));
+}
+
+.box .button:hover {
+color: white;
+background: linear-gradient(to left, var(--ColorGrad3), var(--ColorGrad4));
+}
+
+input {
+margin-bottom: 10px;
+}
+
+input:focus {
+border-color: var(--ColorGrad3);
+box-shadow: 0 0 10px var(--ColorGrad3);
+}
+
+button {
+margin-top: 10px;
+}

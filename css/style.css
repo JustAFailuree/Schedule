@@ -1,0 +1,98 @@
+:root{
+    --ColorGrad1: #1A1A1D;
+    --ColorGrad2: #3B1C32;
+    --ColorGrad3: #6A1E55;
+    --ColorGrad4: #A64D79;
+}
+
+.navbar, .navbar-menu.is-active{
+    background-color: var(--ColorGrad2);
+}
+
+.navbar-item{
+    color: white;
+}
+
+.navbar .navbar-item:hover {
+    background-color: var(--link);
+    background: linear-gradient(0.25turn, var(--ColorGrad1), var(--ColorGrad2));
+    color: whitesmoke;
+}
+
+.hero-body{
+    background-color: var(--ColorGrad4);
+}
+
+body{
+    background: linear-gradient(var(--ColorGrad2), var(--ColorGrad1));
+}
+
+.footer{
+    background-color: inherit;
+}
+
+.container{
+    margin-top: 20px;
+}
+.container .button{
+    color: white;
+    background-color: var(--ColorGrad2);
+    margin-top: 10px;
+}
+
+.container .button:hover{
+    color: white;
+    background: linear-gradient(to left, var(--ColorGrad5), var(--ColorGrad2));
+}
+
+.navbar-burger span {
+    background-color: black
+}
+.footer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer img{
+    width: 40px;
+    height: 40px;
+}
+
+.preloader {
+    position: relative;
+    width: 100%;
+    margin: auto;
+  }
+  
+  .background-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    text-align: center; 
+    background: rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .subtitle {
+      color: white;
+    font-size: 48px;
+  }
+  
+  .title {
+      color: white;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom:20px;
+  }
+

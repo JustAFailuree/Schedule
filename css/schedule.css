@@ -1,0 +1,99 @@
+:root{
+    --ColorGrad1: #1A1A1D;
+    --ColorGrad2: #3B1C32;
+    --ColorGrad3: #6A1E55;
+    --ColorGrad4: #A64D79;
+}
+
+.navbar, .navbar-menu.is-active{
+    background-color: var(--ColorGrad1);
+}
+
+.navbar-item{
+    color: white;
+}
+
+.navbar .navbar-item:hover {
+    background-color: var(--link);
+    background: linear-gradient(0.25turn, var(--ColorGrad1), var(--ColorGrad2));
+    color: whitesmoke;
+}
+
+body{
+    background: linear-gradient(var(--ColorGrad2), var(--ColorGrad1));
+}
+
+.footer{
+    background-color: inherit;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+}
+
+.section {
+    padding: 2rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.box {
+    background: linear-gradient(to top, #3B1C32, #6A1E55);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 10px 20px 20px black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#week-picker {
+    width: 150px;
+    text-align: center;
+    font-size: 0.9rem;
+    padding: 5px;
+}
+
+#next-week, #prev-week{
+    background-color: var(--ColorGrad1);
+}
+
+.button {
+    font-size: 1rem;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.button:hover {
+    transform: scale(1.05);
+}
+
+.table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.table {
+    background-color: white;
+    color: black;
+    border-collapse: collapse;
+    width: 100%;
+    box-shadow: 10px 20px 20px black;
+    
+}
+
+th, td {
+    border: 1px solid #ddd;
+    text-align: center;
+    padding: 10px;
+}
+

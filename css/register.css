@@ -1,0 +1,75 @@
+:root{
+  --ColorGrad1: #1A1A1D;
+  --ColorGrad2: #3B1C32;
+  --ColorGrad3: #6A1E55;
+  --ColorGrad4: #A64D79;
+}
+
+body {
+margin: 0;
+background-image: url('../images/back.jpg');
+
+background-size: cover;
+background-position: center;
+}
+
+.register-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ColorGrad1) var(--ColorGrad4);
+}
+
+
+.box {
+  width: 80vw;
+  max-width: 400px;
+  padding: 2rem;
+  background: linear-gradient(to top, var(--ColorGrad1), var(--ColorGrad2));
+  box-shadow: 10px 20px 20px black;
+  color: white;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.box .button {
+  color: white;
+  background: linear-gradient(to left, var(--ColorGrad4), var(--ColorGrad3));
+}
+
+.box .button:hover {
+  color: white;
+  background: linear-gradient(to left, var(--ColorGrad3), var(--ColorGrad4));
+}
+
+.field {
+  margin-bottom: 8px;
+}
+
+.label {
+  margin-bottom: 3px;
+  font-size: 0.9rem;
+}
+
+.input {
+  padding: 6px;
+  font-size: 0.9rem;
+}
+
+input:focus {
+  border-color: var(--ColorGrad3);
+  box-shadow: 0 0 10px var(--ColorGrad3);
+}
+
+button {
+  margin-top: 10px;
+}
+
+.is-centered {
+  display: flex;
+  justify-content: center;
+}
+
