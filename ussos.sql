@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 09, 2025 at 11:03 AM
+-- Generation Time: Apr 09, 2025 at 11:10 AM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -29,13 +29,13 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `classes` (
   `class_ID` int(11) NOT NULL,
-  `wykladowca_ID` int(5) NOT NULL,
+  `user_ID` int(5) NOT NULL,
   `class_name` varchar(255) DEFAULT NULL,
   `Data_zajec` date NOT NULL,
   `Godzina_rozpoczecia` time NOT NULL,
   `Godzina_zakonczenia` time NOT NULL,
   `kierunek_name` varchar(255) DEFAULT NULL,
-  `Typ_zajec` char(1) NOT NULL
+  `Typ_zajec` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -114,7 +114,7 @@ CREATE TABLE `year_classes` (
 --
 ALTER TABLE `classes`
   ADD PRIMARY KEY (`class_ID`),
-  ADD KEY `wykladowca_ID` (`wykladowca_ID`);
+  ADD KEY `wykladowca_ID` (`user_ID`);
 
 --
 -- Indeksy dla tabeli `groups`
@@ -168,7 +168,7 @@ ALTER TABLE `group_classes`
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`group_ID`) REFERENCES `groups` (`group_ID`),
   ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`kierunek_name`) REFERENCES `year_classes` (`Kierunek_name`),
-  ADD CONSTRAINT `users_ibfk_3` FOREIGN KEY (`user_ID`) REFERENCES `classes` (`wykladowca_ID`);
+  ADD CONSTRAINT `users_ibfk_3` FOREIGN KEY (`user_ID`) REFERENCES `classes` (`user_ID`);
 
 --
 -- Constraints for table `user_groups`
