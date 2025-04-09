@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<?php
+session_start();
+?>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Kierunki Studiów</title>

@@ -13,21 +13,21 @@
     <div class="login-container">
         <div class="box">
             <h1 class="title has-text-centered">Logowanie</h1>
-            <form>
+            <form method="POST" action="zaloguj.php">
                 <div class="field">
                     <label class="label">Nazwa użytkownika</label>
                     <div class="control">
-                        <input class="input" type="text" id="userName" placeholder="Wprowadź nazwę użytkownika" required>
+                        <input class="input" type="text" id="userName" name="userName" placeholder="Wprowadź nazwę użytkownika" required>
                     </div>
                 </div>
                 <div class="field">
                     <label class="label">Hasło</label>
                     <div class="control">
-                        <input class="input" type="password" id="password" placeholder="Wprowadź hasło" required>
+                        <input class="input" type="password" id="password" name="password" placeholder="Wprowadź hasło" required>
                     </div>
                 </div>
                 <div class="field">
-                    <button class="button is-fullwidth" type="button" onclick="login()">Zaloguj się</button>
+                    <button class="button is-fullwidth" type="submit">Zaloguj się</button>
                 </div>
             </form>
             <p id="errorMessage" class="has-text-danger has-text-centered" style="display: none;">Nieprawidłowe dane logowania</p>
@@ -41,4 +41,3 @@
     </div> 
 </body>
 </html>
-
