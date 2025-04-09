@@ -121,6 +121,57 @@
     </div> 
 </div> 
 
+<?php
+// Połączenie z bazą danych
+include 'pma.php';
+
+// Tworzenie połączenia
+
+
+
+
+// Wykonanie zapytania
+$sql = "SELECT 
+            data_zajec, 
+            DATE_FORMAT(Godzina_rozpoczecia, '%H:%i') AS Godzina_rozpoczecia, 
+            DATE_FORMAT(godzina_zakonczenia, '%H:%i') AS godzina_zakonczenia, 
+            class_name, 
+            wykladowca_ID 
+        FROM classes;";
+
+// Wykonanie zapytania
+$result = $conn->query($sql);
+
+// Tablica do przechowywania wyników
+$scheduleData = [];
+
+if ($result->num_rows > 0) {
+    // Pobieranie danych z bazy
+    while ($row = $result->fetch_assoc()) {
+        // Przekształcanie danych na odpowiedni format
+        $scheduleData[] = [
+            'date' => $row['data_zajec'], // Data zajęć
+            'startTime' => $row['Godzina_rozpoczecia'], // Godzina rozpoczęcia
+            'endTime' => $row['godzina_zakonczenia'], // Godzina zakończenia
+            'subject' => $row['class_name'], // Nazwa przedmiotu
+            'teacher' => $row['wykladowca_ID'] // Imię wykładowcy
+        ];
+    }
+}
+
+// Zamykamy połączenie
+$conn->close();
+
+// Zwracamy dane w formacie JSON do JavaScript
+echo "<script>";
+echo "const scheduleData = " . json_encode($scheduleData) . ";";
+echo "</script>";
+?>
+
+
+
+
+
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -128,16 +179,16 @@
         generateTable();
         fetchSchedule();
     });
-    
-    let currentWeekStart = getMonday(new Date()); 
-    
+
+    let currentWeekStart = getMonday(new Date());
+
     function setupWeekNavigation() {
         const weekPicker = document.getElementById("week-picker");
         const prevWeekBtn = document.getElementById("prev-week");
         const nextWeekBtn = document.getElementById("next-week");
-    
+
         weekPicker.value = formatDate(currentWeekStart);
-    
+
         prevWeekBtn.addEventListener("click", () => changeWeek(-7));
         nextWeekBtn.addEventListener("click", () => changeWeek(7));
         weekPicker.addEventListener("change", (e) => {
@@ -145,39 +196,39 @@
             fetchSchedule();
         });
     }
-    
+
     function changeWeek(days) {
         currentWeekStart.setDate(currentWeekStart.getDate() + days);
         document.getElementById("week-picker").value = formatDate(currentWeekStart);
         fetchSchedule();
     }
-    
+
     function formatDate(date) {
         return date.toISOString().split("T")[0];
     }
-    
+
     function getMonday(date) {
         let d = new Date(date);
         let day = d.getDay();
         let diff = d.getDate() - day + (day === 0 ? -6 : 1);
         return new Date(d.setDate(diff));
     }
-    
+
     function generateTable() {
         const tableBody = document.getElementById("schedule-body");
         tableBody.innerHTML = "";
-    
+
         for (let hour = 7; hour < 22; hour++) {
             for (let quarter = 0; quarter < 4; quarter++) {
                 let row = document.createElement("tr");
-    
+
                 if (quarter === 0) {
                     let timeCell = document.createElement("td");
                     timeCell.rowSpan = 4;
                     timeCell.textContent = `${hour}:00 - ${hour + 1}:00`;
                     row.appendChild(timeCell);
                 }
-    
+
                 for (let day = 1; day <= 7; day++) {
                     let cell = document.createElement("td");
                     let time = (hour * 4 + quarter) / 4; 
@@ -186,60 +237,55 @@
                     cell.dataset.day = day;
                     row.appendChild(cell);
                 }
-    
+
                 tableBody.appendChild(row);
             }
         }
     }
-    
+
     async function fetchSchedule() {
-    const scheduleData = [
-        { date: "2024-03-18", startTime: "09:15", endTime: "11:45", subject: "Matematyka", teacher: "Dr. Kowalski" },
-        { date: "2024-03-26", startTime: "12:30", endTime: "13:15", subject: "Fizyka", teacher: "Prof. Nowak" },
-        { date: "2024-03-22", startTime: "15:45", endTime: "17:00", subject: "Informatyka", teacher: "Dr. Wiśniewski" },
-    ];
+        let startOfWeek = new Date(currentWeekStart);
+        let weekDates = [];
+        for (let i = 0; i < 7; i++) {
+            let d = new Date(startOfWeek);
+            d.setDate(startOfWeek.getDate() + i);
+            weekDates.push(formatDate(d));
+        }
 
-    let startOfWeek = new Date(currentWeekStart);
-    let weekDates = [];
-    for (let i = 0; i < 7; i++) {
-        let d = new Date(startOfWeek);
-        d.setDate(startOfWeek.getDate() + i);
-        weekDates.push(formatDate(d));
-    }
+        document.querySelectorAll(".schedule-slot").forEach(cell => {
+            cell.innerHTML = "";
+            cell.classList.remove("has-background-info-light");
+            cell.removeAttribute("rowspan");
+        });
 
-    document.querySelectorAll(".schedule-slot").forEach(cell => {
-        cell.innerHTML = "";
-        cell.classList.remove("has-background-info-light");
-        cell.removeAttribute("rowspan");
-    });
+        scheduleData
+            .filter(item => weekDates.includes(item.date)) 
+            .forEach(item => {
+                let [startH, startM] = item.startTime.split(":").map(Number);
+                let [endH, endM] = item.endTime.split(":").map(Number);
 
-    scheduleData
-        .filter(item => weekDates.includes(item.date)) 
-        .forEach(item => {
-            let [startH, startM] = item.startTime.split(":").map(Number);
-            let [endH, endM] = item.endTime.split(":").map(Number);
+                let startSlot = (startH * 4 + Math.round(startM / 15)) / 4;
+                let endSlot = (endH * 4 + Math.round(endM / 15)) / 4;
+                let totalRows = Math.round((endSlot - startSlot) * 4);
 
-            let startSlot = (startH * 4 + Math.round(startM / 15)) / 4;
-            let endSlot = (endH * 4 + Math.round(endM / 15)) / 4;
-            let totalRows = Math.round((endSlot - startSlot) * 4);
+                let dayIndex = weekDates.indexOf(item.date) + 1; 
 
-            let dayIndex = weekDates.indexOf(item.date) + 1; 
+                let startCell = document.querySelector(`.schedule-slot[data-hour="${startSlot.toFixed(2)}"][data-day="${dayIndex}"]`);
+                if (startCell) {
+                    startCell.innerHTML = `<strong>${item.subject}</strong><br><small>${item.teacher}</small><br><small>${item.startTime} - ${item.endTime}</small>`;
+                    startCell.classList.add("has-background-info-light");
+                    startCell.setAttribute("rowspan", totalRows);
 
-            let startCell = document.querySelector(`.schedule-slot[data-hour="${startSlot.toFixed(2)}"][data-day="${dayIndex}"]`);
-            if (startCell) {
-                startCell.innerHTML = `<strong>${item.subject}</strong><br><small>${item.teacher}</small><br><small>${item.startTime} - ${item.endTime}</small>`;
-                startCell.classList.add("has-background-info-light");
-                startCell.setAttribute("rowspan", totalRows);
-
-                for (let i = 1; i < totalRows; i++) {
-                    let nextCell = document.querySelector(`.schedule-slot[data-hour="${(startSlot + (i * 0.25)).toFixed(2)}"][data-day="${dayIndex}"]`);
-                    if (nextCell) {
-                        nextCell.remove();
+                    for (let i = 1; i < totalRows; i++) {
+                        let nextCell = document.querySelector(`.schedule-slot[data-hour="${(startSlot + (i * 0.25)).toFixed(2)}"][data-day="${dayIndex}"]`);
+                        if (nextCell) {
+                            nextCell.remove();
+                        }
                     }
                 }
-            }
-        });
-}
-    </script>
+            });
+    }
+</script>
+
 </body>
 </html>
