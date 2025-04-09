@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 09, 2025 at 11:10 AM
+-- Generation Time: Apr 09, 2025 at 12:29 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -41,34 +41,12 @@ CREATE TABLE `classes` (
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `groups`
---
-
-CREATE TABLE `groups` (
-  `group_ID` int(11) NOT NULL,
-  `group_name` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `group_classes`
---
-
-CREATE TABLE `group_classes` (
-  `group_ID` int(11) NOT NULL,
-  `class_ID` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Struktura tabeli dla tabeli `users`
 --
 
 CREATE TABLE `users` (
   `user_ID` int(11) NOT NULL,
-  `Login` varchar(25) NOT NULL,
+  `Nazwa` varchar(25) NOT NULL,
   `Haslo` varchar(25) NOT NULL,
   `Imie` varchar(255) NOT NULL,
   `Nazwisko` varchar(255) NOT NULL,
@@ -83,16 +61,12 @@ CREATE TABLE `users` (
   `rok_studiow` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Struktura tabeli dla tabeli `user_groups`
+-- Dumping data for table `users`
 --
 
-CREATE TABLE `user_groups` (
-  `user_ID` int(11) NOT NULL,
-  `group_ID` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `users` (`user_ID`, `Nazwa`, `Haslo`, `Imie`, `Nazwisko`, `Email`, `Telefon`, `Miasto`, `Ulice`, `Numer_mieszkania`, `kierunek_name`, `Rola`, `group_ID`, `rok_studiow`) VALUES
+(1, 'ngga', 'ngga', 'kubus', 'bolec', 'wsadzambolec@123.koks.com', 696969696, 'kapusniak', 'balls', 69, 'gooner', 'U', NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -117,50 +91,14 @@ ALTER TABLE `classes`
   ADD KEY `wykladowca_ID` (`user_ID`);
 
 --
--- Indeksy dla tabeli `groups`
---
-ALTER TABLE `groups`
-  ADD PRIMARY KEY (`group_ID`);
-
---
--- Indeksy dla tabeli `group_classes`
---
-ALTER TABLE `group_classes`
-  ADD PRIMARY KEY (`group_ID`,`class_ID`),
-  ADD KEY `class_ID` (`class_ID`);
-
---
 -- Indeksy dla tabeli `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_ID`),
-  ADD KEY `group_ID` (`group_ID`),
-  ADD KEY `Kierunek_name` (`kierunek_name`);
-
---
--- Indeksy dla tabeli `user_groups`
---
-ALTER TABLE `user_groups`
-  ADD PRIMARY KEY (`user_ID`),
-  ADD KEY `group_ID` (`group_ID`);
-
---
--- Indeksy dla tabeli `year_classes`
---
-ALTER TABLE `year_classes`
-  ADD PRIMARY KEY (`Kierunek_name`,`class_ID`),
-  ADD KEY `class_ID` (`class_ID`);
+  ADD PRIMARY KEY (`user_ID`);
 
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `group_classes`
---
-ALTER TABLE `group_classes`
-  ADD CONSTRAINT `group_classes_ibfk_1` FOREIGN KEY (`group_ID`) REFERENCES `groups` (`group_ID`),
-  ADD CONSTRAINT `group_classes_ibfk_2` FOREIGN KEY (`class_ID`) REFERENCES `classes` (`class_ID`);
 
 --
 -- Constraints for table `users`
@@ -169,19 +107,6 @@ ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`group_ID`) REFERENCES `groups` (`group_ID`),
   ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`kierunek_name`) REFERENCES `year_classes` (`Kierunek_name`),
   ADD CONSTRAINT `users_ibfk_3` FOREIGN KEY (`user_ID`) REFERENCES `classes` (`user_ID`);
-
---
--- Constraints for table `user_groups`
---
-ALTER TABLE `user_groups`
-  ADD CONSTRAINT `user_groups_ibfk_1` FOREIGN KEY (`user_ID`) REFERENCES `users` (`user_ID`),
-  ADD CONSTRAINT `user_groups_ibfk_2` FOREIGN KEY (`group_ID`) REFERENCES `groups` (`group_ID`);
-
---
--- Constraints for table `year_classes`
---
-ALTER TABLE `year_classes`
-  ADD CONSTRAINT `year_classes_ibfk_1` FOREIGN KEY (`class_ID`) REFERENCES `classes` (`class_ID`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
