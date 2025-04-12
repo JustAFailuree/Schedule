@@ -23,21 +23,25 @@
         // Sprawdzamy, czy użytkownik istnieje
         if ($result->num_rows > 0) {
             $row = $result->fetch_assoc();
-            $verify = password_verify($haslo, $row['Haslo']);
+            //$verify = password_verify($haslo, $row['Haslo']);
 
-            if ($verify) {
+            if ($haslo==$row['Haslo']) {
                 // Jeśli hasło jest poprawne, zapisujemy dane w sesji
                 $_SESSION['role'] = $row['Rola'];
                 $_SESSION['id'] = $row['user_ID'];
+                
                 echo "<script>window.location.href = 'index.php'; </script>";
                 exit();
             } else {
                 // Jeśli hasło jest niepoprawne, wyświetlamy błąd
                 echo "<script> document.getElementById('errorMessage').style.display = 'block'; </script>";
+                
+                
             }
         } else {
             // Jeśli użytkownik nie istnieje, wyświetlamy błąd
             echo "<script> document.getElementById('errorMessage').style.display = 'block'; </script>";
+           
         }
 
         $conn->close();
