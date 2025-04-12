@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2025 at 04:00 PM
+-- Generation Time: Apr 12, 2025 at 04:04 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,7 +29,6 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `classes` (
   `class_ID` int(11) NOT NULL,
-  `user_ID` int(5) NOT NULL,
   `class_name` varchar(255) DEFAULT NULL,
   `Data_zajec` date NOT NULL,
   `Godzina_rozpoczecia` time NOT NULL,
@@ -69,7 +68,6 @@ CREATE TABLE `users` (
   `Numer_mieszkania` int(11) NOT NULL,
   `kierunek_name` varchar(255) DEFAULT NULL,
   `Rola` char(1) NOT NULL DEFAULT 'U',
-  `group_ID` int(11) DEFAULT NULL,
   `rok_studiow` int(11) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -77,8 +75,8 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_ID`, `Nazwa`, `Haslo`, `Imie`, `Nazwisko`, `Email`, `Telefon`, `Miasto`, `Ulice`, `Numer_mieszkania`, `kierunek_name`, `Rola`, `group_ID`, `rok_studiow`) VALUES
-(1, 'ngga', 'ngga', 'kubus', 'bolec', 'wsadzambolec@123.koks.com', 696969696, 'kapusniak', 'balls', 69, 'gooner', 'U', NULL, 3);
+INSERT INTO `users` (`user_ID`, `Nazwa`, `Haslo`, `Imie`, `Nazwisko`, `Email`, `Telefon`, `Miasto`, `Ulice`, `Numer_mieszkania`, `kierunek_name`, `Rola`, `rok_studiow`) VALUES
+(1, 'ngga', 'ngga', 'kubus', 'bolec', 'wsadzambolec@123.koks.com', 696969696, 'kapusniak', 'balls', 69, 'gooner', 'U', 3);
 
 --
 -- Indexes for dumped tables
