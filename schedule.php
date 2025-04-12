@@ -125,170 +125,222 @@ session_start();
 </div> 
 
 <?php
-// Połączenie z bazą danych
 include 'pma.php';
 
-// Tworzenie połączenia
-
-
-
-
-// Wykonanie zapytania
 $sql = "SELECT 
-            data_zajec, 
-            DATE_FORMAT(Godzina_rozpoczecia, '%H:%i') AS Godzina_rozpoczecia, 
-            DATE_FORMAT(godzina_zakonczenia, '%H:%i') AS godzina_zakonczenia, 
-            class_name, 
-            wykladowca_ID 
-        FROM classes;";
+            c.data_zajec, 
+            DATE_FORMAT(c.Godzina_rozpoczecia, '%H:%i') AS Godzina_rozpoczecia, 
+            DATE_FORMAT(c.godzina_zakonczenia, '%H:%i') AS godzina_zakonczenia, 
+            c.class_name, 
+            c.Typ_zajec,
+            u.Imie,
+            u.Nazwisko,
+            u.tytul_naukowy,  
+            c.budynek,        
+            c.numer_sali      
+        FROM classes c
+        LEFT JOIN users u ON c.id_kierunku = u.id_kierunku AND u.Rola = 'W';";
 
-// Wykonanie zapytania
 $result = $conn->query($sql);
 
-// Tablica do przechowywania wyników
 $scheduleData = [];
-
 if ($result->num_rows > 0) {
-    // Pobieranie danych z bazy
     while ($row = $result->fetch_assoc()) {
-        // Przekształcanie danych na odpowiedni format
         $scheduleData[] = [
-            'date' => $row['data_zajec'], // Data zajęć
-            'startTime' => $row['Godzina_rozpoczecia'], // Godzina rozpoczęcia
-            'endTime' => $row['godzina_zakonczenia'], // Godzina zakończenia
-            'subject' => $row['class_name'], // Nazwa przedmiotu
-            'teacher' => $row['wykladowca_ID'] // Imię wykładowcy
+            'date' => $row['data_zajec'],
+            'startTime' => $row['Godzina_rozpoczecia'],
+            'endTime' => $row['godzina_zakonczenia'],
+            'subject' => $row['class_name'],
+            'type' => $row['Typ_zajec'],
+            'teacher' => $row['tytul_naukowy'].' '.$row['Imie'] . ' ' . $row['Nazwisko'], 
+            'building' => $row['budynek'],     
+            'roomNumber' => $row['numer_sali'] 
         ];
     }
 }
-
-// Zamykamy połączenie
 $conn->close();
-
-// Zwracamy dane w formacie JSON do JavaScript
-echo "<script>";
-echo "const scheduleData = " . json_encode($scheduleData) . ";";
-echo "</script>";
 ?>
 
+<script>
+const scheduleData = <?php echo json_encode($scheduleData); ?>;
+</script>
 
+<table>
+    <thead>
+    </thead>
+    <tbody id="schedule-body"></tbody>
+</table>
 
+<div id="classModal" class="modal">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <header style="background-color:black; border:none;" class="modal-card-head">
+      <p  style="color:white;" class="modal-card-title" id="modal-subject">Zajęcia</p>
+      <button class="delete" aria-label="close" onclick="closeModal()"></button>
+    </header>
+    <section  style="background-color:#3B1C32; color:white;" class="modal-card-body">
+      <p><strong style="color:white;">Godzina:</strong> <span id="modal-time"></span></p>
+      <p><strong style="color:white;">Typ zajęć:</strong> <span id="modal-type"></span></p>
+      <p><strong style="color:white;">Wykładowca:</strong> <span id="modal-teacher"></span></p>
+      <p><strong style="color:white;">Budynek:</strong> <span id="modal-building"></span></p> 
+      <p><strong style="color:white;">Numer sali:</strong> <span id="modal-roomNumber"></span></p> 
+    </section>
+    <footer style="background-color:black; border:none;" class="modal-card-foot">
+      <button  style="background-color:#A64D79; border:none; color:black;"class="button" onclick="closeModal()">Zamknij</button>
+    </footer>
+  </div>
+</div>
 
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        setupWeekNavigation();
-        generateTable();
+document.addEventListener("DOMContentLoaded", function () {
+    setupWeekNavigation();
+    generateTable();
+    fetchSchedule();
+});
+
+let currentWeekStart = getMonday(new Date());
+
+function setupWeekNavigation() {
+    const weekPicker = document.getElementById("week-picker");
+    const prevWeekBtn = document.getElementById("prev-week");
+    const nextWeekBtn = document.getElementById("next-week");
+
+    weekPicker.value = formatDate(currentWeekStart);
+
+    prevWeekBtn.addEventListener("click", () => changeWeek(-7));
+    nextWeekBtn.addEventListener("click", () => changeWeek(7));
+    weekPicker.addEventListener("change", (e) => {
+        currentWeekStart = getMonday(new Date(e.target.value));
         fetchSchedule();
     });
+}
 
-    let currentWeekStart = getMonday(new Date());
+function changeWeek(days) {
+    currentWeekStart.setDate(currentWeekStart.getDate() + days);
+    document.getElementById("week-picker").value = formatDate(currentWeekStart);
+    fetchSchedule();
+}
 
-    function setupWeekNavigation() {
-        const weekPicker = document.getElementById("week-picker");
-        const prevWeekBtn = document.getElementById("prev-week");
-        const nextWeekBtn = document.getElementById("next-week");
+function formatDate(date) {
+    return date.toISOString().split("T")[0];
+}
 
-        weekPicker.value = formatDate(currentWeekStart);
+function getMonday(date) {
+    let d = new Date(date);
+    let day = d.getDay();
+    let diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(d.setDate(diff));
+}
 
-        prevWeekBtn.addEventListener("click", () => changeWeek(-7));
-        nextWeekBtn.addEventListener("click", () => changeWeek(7));
-        weekPicker.addEventListener("change", (e) => {
-            currentWeekStart = getMonday(new Date(e.target.value));
-            fetchSchedule();
-        });
-    }
+function generateTable() {
+    const tableBody = document.getElementById("schedule-body");
+    tableBody.innerHTML = "";
 
-    function changeWeek(days) {
-        currentWeekStart.setDate(currentWeekStart.getDate() + days);
-        document.getElementById("week-picker").value = formatDate(currentWeekStart);
-        fetchSchedule();
-    }
+    for (let hour = 7; hour < 22; hour++) {
+        for (let quarter = 0; quarter < 4; quarter++) {
+            let row = document.createElement("tr");
 
-    function formatDate(date) {
-        return date.toISOString().split("T")[0];
-    }
-
-    function getMonday(date) {
-        let d = new Date(date);
-        let day = d.getDay();
-        let diff = d.getDate() - day + (day === 0 ? -6 : 1);
-        return new Date(d.setDate(diff));
-    }
-
-    function generateTable() {
-        const tableBody = document.getElementById("schedule-body");
-        tableBody.innerHTML = "";
-
-        for (let hour = 7; hour < 22; hour++) {
-            for (let quarter = 0; quarter < 4; quarter++) {
-                let row = document.createElement("tr");
-
-                if (quarter === 0) {
-                    let timeCell = document.createElement("td");
-                    timeCell.rowSpan = 4;
-                    timeCell.textContent = `${hour}:00 - ${hour + 1}:00`;
-                    row.appendChild(timeCell);
-                }
-
-                for (let day = 1; day <= 7; day++) {
-                    let cell = document.createElement("td");
-                    let time = (hour * 4 + quarter) / 4; 
-                    cell.classList.add("schedule-slot");
-                    cell.dataset.hour = time.toFixed(2); 
-                    cell.dataset.day = day;
-                    row.appendChild(cell);
-                }
-
-                tableBody.appendChild(row);
+            if (quarter === 0) {
+                let timeCell = document.createElement("td");
+                timeCell.rowSpan = 4;
+                timeCell.textContent = `${hour}:00 - ${hour + 1}:00`;
+                row.appendChild(timeCell);
             }
+
+            for (let day = 1; day <= 7; day++) {
+                let cell = document.createElement("td");
+                let time = (hour * 4 + quarter) / 4;
+                cell.classList.add("schedule-slot");
+                cell.dataset.hour = time.toFixed(2);
+                cell.dataset.day = day;
+                row.appendChild(cell);
+            }
+
+            tableBody.appendChild(row);
         }
     }
+}
 
-    async function fetchSchedule() {
-        let startOfWeek = new Date(currentWeekStart);
-        let weekDates = [];
-        for (let i = 0; i < 7; i++) {
-            let d = new Date(startOfWeek);
-            d.setDate(startOfWeek.getDate() + i);
-            weekDates.push(formatDate(d));
-        }
+    function fetchSchedule() {
+    let startOfWeek = new Date(currentWeekStart);
+    let weekDates = [];
+    for (let i = 0; i < 7; i++) {
+        let d = new Date(startOfWeek);
+        d.setDate(startOfWeek.getDate() + i);
+        weekDates.push(formatDate(d));
+    }
 
-        document.querySelectorAll(".schedule-slot").forEach(cell => {
-            cell.innerHTML = "";
-            cell.classList.remove("has-background-info-light");
-            cell.removeAttribute("rowspan");
-        });
+    document.querySelectorAll(".schedule-slot").forEach(cell => {
+        cell.innerHTML = "";
+        cell.classList.remove("has-background-info-light");
+        cell.removeAttribute("rowspan");
+    });
 
-        scheduleData
-            .filter(item => weekDates.includes(item.date)) 
-            .forEach(item => {
-                let [startH, startM] = item.startTime.split(":").map(Number);
-                let [endH, endM] = item.endTime.split(":").map(Number);
+    scheduleData
+        .filter(item => weekDates.includes(item.date))
+        .forEach(item => {
+            let [startH, startM] = item.startTime.split(":").map(Number);
+            let [endH, endM] = item.endTime.split(":").map(Number);
 
-                let startSlot = (startH * 4 + Math.round(startM / 15)) / 4;
-                let endSlot = (endH * 4 + Math.round(endM / 15)) / 4;
-                let totalRows = Math.round((endSlot - startSlot) * 4);
+            let startSlot = (startH * 4 + Math.round(startM / 15)) / 4;
+            let endSlot = (endH * 4 + Math.round(endM / 15)) / 4;
+            let totalRows = Math.round((endSlot - startSlot) * 4);
 
-                let dayIndex = weekDates.indexOf(item.date) + 1; 
+            let dayIndex = weekDates.indexOf(item.date) + 1;
 
-                let startCell = document.querySelector(`.schedule-slot[data-hour="${startSlot.toFixed(2)}"][data-day="${dayIndex}"]`);
-                if (startCell) {
-                    startCell.innerHTML = `<strong>${item.subject}</strong><br><small>${item.teacher}</small><br><small>${item.startTime} - ${item.endTime}</small>`;
-                    startCell.classList.add("has-background-info-light");
-                    startCell.setAttribute("rowspan", totalRows);
+            let startCell = document.querySelector(`.schedule-slot[data-hour="${startSlot.toFixed(2)}"][data-day="${dayIndex}"]`);
+            if (startCell) {
+                startCell.innerHTML = `<strong style="color:black;">${item.subject}</strong><br><small>${item.startTime} - ${item.endTime}</small><br><small>${item.building}<br>${item.roomNumber}</small>`;
+                startCell.style.backgroundColor = "#A64D79";  
+                startCell.style.color = "black";  
+                startCell.setAttribute("rowspan", totalRows);
 
-                    for (let i = 1; i < totalRows; i++) {
-                        let nextCell = document.querySelector(`.schedule-slot[data-hour="${(startSlot + (i * 0.25)).toFixed(2)}"][data-day="${dayIndex}"]`);
-                        if (nextCell) {
-                            nextCell.remove();
-                        }
+                startCell.dataset.subject = item.subject;
+                startCell.dataset.startTime = item.startTime;
+                startCell.dataset.endTime = item.endTime;
+                startCell.dataset.type = item.type;
+                startCell.dataset.teacher = item.teacher;
+                startCell.dataset.building = item.building; 
+                startCell.dataset.roomNumber = item.roomNumber; 
+
+                for (let i = 1; i < totalRows; i++) {
+                    let nextCell = document.querySelector(`.schedule-slot[data-hour="${(startSlot + (i * 0.25)).toFixed(2)}"][data-day="${dayIndex}"]`);
+                    if (nextCell) {
+                        nextCell.remove();
                     }
                 }
-            });
-    }
+
+                startCell.addEventListener("click", () => {
+                    document.getElementById("modal-subject").textContent = startCell.dataset.subject;
+                    document.getElementById("modal-time").textContent = `${startCell.dataset.startTime} - ${startCell.dataset.endTime}`;
+                    document.getElementById("modal-type").textContent = startCell.dataset.type;
+                    document.getElementById("modal-teacher").textContent = startCell.dataset.teacher;
+                    document.getElementById("modal-building").textContent = startCell.dataset.building; 
+                    document.getElementById("modal-roomNumber").textContent = startCell.dataset.roomNumber; 
+                    openModal();
+                });
+
+            }
+        });
+}
+
+
+        function openModal() {
+            document.getElementById("classModal").classList.add("is-active");
+                }
+
+        function closeModal() {
+            document.getElementById("classModal").classList.remove("is-active");
+        }
+
+
+
 </script>
 
 </body>
 </html>
+
+
+
