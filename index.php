@@ -40,6 +40,17 @@ echo $_SESSION['id'], $_SESSION['role'];
             <a class="navbar-item" href="#services">Usługi</a>
             <a class="navbar-item" href="#my-university">Uniwersytet</a>
             <a class="navbar-item" href="#contact">Kontakt</a>
+            <?php
+              if (isset($_SESSION['role']) && ($_SESSION['role'] === 'A')) {
+                  // Użytkownik zalogowany (rola U albo A)
+                  echo '
+                  <a class="navbar-item" href="admin.php">
+                      <span>Panel Admina</span>
+                  </a>';
+              } else {
+                  
+              }
+              ?>
         </div>
 
         <div class="navbar-end">
