@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 12, 2025 at 04:04 PM
+-- Generation Time: Apr 12, 2025 at 04:20 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -33,7 +33,8 @@ CREATE TABLE `classes` (
   `Data_zajec` date NOT NULL,
   `Godzina_rozpoczecia` time NOT NULL,
   `Godzina_zakonczenia` time NOT NULL,
-  `Typ_zajec` varchar(30) NOT NULL
+  `Typ_zajec` varchar(30) NOT NULL,
+  `id_kierunku` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -44,9 +45,7 @@ CREATE TABLE `classes` (
 
 CREATE TABLE `kierunki` (
   `id_kierunku` int(11) NOT NULL,
-  `nazwa_kierunku` varchar(50) NOT NULL,
-  `id_uzytkownika` int(11) NOT NULL,
-  `id_class` int(11) NOT NULL
+  `nazwa_kierunku` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -66,17 +65,10 @@ CREATE TABLE `users` (
   `Miasto` varchar(50) NOT NULL,
   `Ulice` varchar(50) NOT NULL,
   `Numer_mieszkania` int(11) NOT NULL,
-  `kierunek_name` varchar(255) DEFAULT NULL,
   `Rola` char(1) NOT NULL DEFAULT 'U',
-  `rok_studiow` int(11) NOT NULL DEFAULT 1
+  `rok_studiow` int(11) DEFAULT NULL,
+  `id_kierunku` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`user_ID`, `Nazwa`, `Haslo`, `Imie`, `Nazwisko`, `Email`, `Telefon`, `Miasto`, `Ulice`, `Numer_mieszkania`, `kierunek_name`, `Rola`, `rok_studiow`) VALUES
-(1, 'ngga', 'ngga', 'kubus', 'bolec', 'wsadzambolec@123.koks.com', 696969696, 'kapusniak', 'balls', 69, 'gooner', 'U', 3);
 
 --
 -- Indexes for dumped tables
@@ -86,32 +78,37 @@ INSERT INTO `users` (`user_ID`, `Nazwa`, `Haslo`, `Imie`, `Nazwisko`, `Email`, `
 -- Indexes for table `classes`
 --
 ALTER TABLE `classes`
-  ADD PRIMARY KEY (`class_ID`);
+  ADD PRIMARY KEY (`class_ID`),
+  ADD KEY `klasy-kierunki` (`id_kierunku`);
 
 --
 -- Indexes for table `kierunki`
 --
 ALTER TABLE `kierunki`
-  ADD PRIMARY KEY (`id_kierunku`),
-  ADD KEY `kierunki-uzytkownicy` (`id_uzytkownika`),
-  ADD KEY `kierunki-classes` (`id_class`);
+  ADD PRIMARY KEY (`id_kierunku`);
 
 --
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`user_ID`);
+  ADD PRIMARY KEY (`user_ID`),
+  ADD KEY `uzytkownicy-kierunki` (`id_kierunku`);
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `kierunki`
+-- Constraints for table `classes`
 --
-ALTER TABLE `kierunki`
-  ADD CONSTRAINT `kierunki-classes` FOREIGN KEY (`id_class`) REFERENCES `classes` (`class_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `kierunki-uzytkownicy` FOREIGN KEY (`id_uzytkownika`) REFERENCES `users` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `classes`
+  ADD CONSTRAINT `klasy-kierunki` FOREIGN KEY (`id_kierunku`) REFERENCES `kierunki` (`id_kierunku`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `users`
+--
+ALTER TABLE `users`
+  ADD CONSTRAINT `uzytkownicy-kierunki` FOREIGN KEY (`id_kierunku`) REFERENCES `kierunki` (`id_kierunku`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
