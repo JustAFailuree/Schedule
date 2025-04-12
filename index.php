@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <?php
+error_reporting(0);
 session_start();
+echo $_SESSION['id'], $_SESSION['role'];
+
 ?>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
   <head>
@@ -40,10 +43,22 @@ session_start();
         </div>
 
         <div class="navbar-end">
-            <a class="navbar-item" href="login.php">
-                <span>Wyloguj</span>
-            </a>
-        </div>
+              <?php
+              if (isset($_SESSION['role']) && ($_SESSION['role'] === 'U' || $_SESSION['role'] === 'A')) {
+                  // Użytkownik zalogowany (rola U albo A)
+                  echo '
+                  <a class="navbar-item" href="logout.php">
+                      <span>Wyloguj</span>
+                  </a>';
+              } else {
+                  // Użytkownik niezalogowany lub ma inną rolę
+                  echo '
+                  <a class="navbar-item" href="login.php">
+                      <span>Zaloguj</span>
+                  </a>';
+              }
+              ?>
+      </div>
     </div>
 </nav>
   <body>
