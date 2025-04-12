@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 09, 2025 at 12:29 PM
--- Wersja serwera: 10.4.32-MariaDB
--- Wersja PHP: 8.2.12
+-- Generation Time: Apr 12, 2025 at 04:00 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `classes`
+-- Table structure for table `classes`
 --
 
 CREATE TABLE `classes` (
@@ -34,14 +34,26 @@ CREATE TABLE `classes` (
   `Data_zajec` date NOT NULL,
   `Godzina_rozpoczecia` time NOT NULL,
   `Godzina_zakonczenia` time NOT NULL,
-  `kierunek_name` varchar(255) DEFAULT NULL,
   `Typ_zajec` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `users`
+-- Table structure for table `kierunki`
+--
+
+CREATE TABLE `kierunki` (
+  `id_kierunku` int(11) NOT NULL,
+  `nazwa_kierunku` varchar(50) NOT NULL,
+  `id_uzytkownika` int(11) NOT NULL,
+  `id_class` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -68,30 +80,26 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_ID`, `Nazwa`, `Haslo`, `Imie`, `Nazwisko`, `Email`, `Telefon`, `Miasto`, `Ulice`, `Numer_mieszkania`, `kierunek_name`, `Rola`, `group_ID`, `rok_studiow`) VALUES
 (1, 'ngga', 'ngga', 'kubus', 'bolec', 'wsadzambolec@123.koks.com', 696969696, 'kapusniak', 'balls', 69, 'gooner', 'U', NULL, 3);
 
--- --------------------------------------------------------
-
 --
--- Struktura tabeli dla tabeli `year_classes`
---
-
-CREATE TABLE `year_classes` (
-  `Kierunek_name` varchar(255) NOT NULL,
-  `class_ID` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Indeksy dla zrzutów tabel
+-- Indexes for dumped tables
 --
 
 --
--- Indeksy dla tabeli `classes`
+-- Indexes for table `classes`
 --
 ALTER TABLE `classes`
-  ADD PRIMARY KEY (`class_ID`),
-  ADD KEY `wykladowca_ID` (`user_ID`);
+  ADD PRIMARY KEY (`class_ID`);
 
 --
--- Indeksy dla tabeli `users`
+-- Indexes for table `kierunki`
+--
+ALTER TABLE `kierunki`
+  ADD PRIMARY KEY (`id_kierunku`),
+  ADD KEY `kierunki-uzytkownicy` (`id_uzytkownika`),
+  ADD KEY `kierunki-classes` (`id_class`);
+
+--
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_ID`);
@@ -101,12 +109,11 @@ ALTER TABLE `users`
 --
 
 --
--- Constraints for table `users`
+-- Constraints for table `kierunki`
 --
-ALTER TABLE `users`
-  ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`group_ID`) REFERENCES `groups` (`group_ID`),
-  ADD CONSTRAINT `users_ibfk_2` FOREIGN KEY (`kierunek_name`) REFERENCES `year_classes` (`Kierunek_name`),
-  ADD CONSTRAINT `users_ibfk_3` FOREIGN KEY (`user_ID`) REFERENCES `classes` (`user_ID`);
+ALTER TABLE `kierunki`
+  ADD CONSTRAINT `kierunki-classes` FOREIGN KEY (`id_class`) REFERENCES `classes` (`class_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `kierunki-uzytkownicy` FOREIGN KEY (`id_uzytkownika`) REFERENCES `users` (`user_ID`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
