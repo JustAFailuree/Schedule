@@ -13,26 +13,17 @@ session_start();
 <body>
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-            
-            <a class="navbar-item" href="index.php">
-                Moja Strona
-            </a>
-    
-           
+            <a class="navbar-item" href="index.php">Moja Strona</a>
             <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
                 <span aria-hidden="true"></span>
             </a>
         </div>
-    
-       
         <div id="navbarMenu" class="navbar-menu">
             <div class="navbar-start">
                 <a class="navbar-item" href="schedule.php">Plan</a>
-
             </div>
-
             <div class="navbar-end">
                 <a class="navbar-item" href="login.php">
                     <span>Wyloguj</span>
@@ -41,88 +32,62 @@ session_start();
         </div>
     </nav>
 
-<section class="section">
-    <div class="container">
-        <h1 class="title has-text-centered has-text-white">Plan Zajęć</h1>
-        <div class="box has-text-centered">
-            <button class="button is-small is-info" id="prev-week">← Poprzedni tydzień</button>
-            <input type="date" id="week-picker" class="input is-small mx-2" />
-            <button class="button is-small is-info" id="next-week">Następny tydzień →</button>
+    <section class="section">
+        <div class="container">
+            <h1 class="title has-text-centered has-text-white">Plan Zajęć</h1>
+            <div class="box has-text-centered">
+                <button class="button is-small is-info" id="prev-week">← Poprzedni tydzień</button>
+                <input type="date" id="week-picker" class="input is-small mx-2" />
+                <button class="button is-small is-info" id="next-week">Następny tydzień →</button>
+            </div>
+            <div class="table-container">
+                <table class="table is-bordered is-narrow is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Godzina</th>
+                            <th>Poniedziałek</th>
+                            <th>Wtorek</th>
+                            <th>Środa</th>
+                            <th>Czwartek</th>
+                            <th>Piątek</th>
+                            <th>Sobota</th>
+                            <th>Niedziela</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
         </div>
+    </section>
 
-        <div class="table-container">
-            <table class="table is-bordered is-narrow is-fullwidth">
-                <thead>
-                    <tr>
-                        <th>Godzina</th>
-                        <th>Poniedziałek</th>
-                        <th>Wtorek</th>
-                        <th>Środa</th>
-                        <th>Czwartek</th>
-                        <th>Piątek</th>
-                        <th>Sobota</th>
-                        <th>Niedziela</th>
-                    </tr>
-                </thead>
-                <tbody id="schedule-body">
-                </tbody>
-            </table>
-            
-        </div>
-    </div>
-</section>
-<div class="footer"> 
-    <div class="columns"> 
-
-      <div class="column has-text-centered has-text-white"> 
-          <p>Copyright © CatFish</p> 
-      </div>
-
-      <div class="column"> 
-        <h4 class="bd-footer-title  
-                   has-text-weight-medium 
-                   has-text-left
-                   has-text-white"> 
-          Schedule 
-        </h4> 
-        <p class="bd-footer-link  
-                  has-text-left
-                  has-text-white"> 
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                  Nullam sed sem ac lorem tincidunt placerat vel quis diam.
-        </p> 
-      </div> 
-    
-      <div class="column"> 
-        <h4 class="bd-footer-title  
-                   has-text-weight-medium  
-                   has-text-justify
-                   has-text-white"> 
-          Address 
-        </h4> 
-        <p class="bd-footer-link has-text-white"> 
-          MAI 33, Antananarivo 105, Madagaskar
-        </p> 
-    
-      </div> 
-    
-      <div class="column"> 
-        <h4 class="bd-footer-title 
-                   has-text-weight-medium 
-                   has-text-justify
-                   has-text-white"> 
-          Contact us 
-        </h4> 
-
-        <p class="bd-footer-link has-text-white"> 
-            <p class="has-text-white">ContactUs@example.com</p>
-            <p class="has-text-white">+261 34 05 024 91 </p>
-          <a href="https://www.sancristobal.mg/">Web Page</a>
-        </p> 
-    
-      </div> 
+    <div class="footer"> 
+        <div class="columns"> 
+            <div class="column has-text-centered has-text-white"> 
+                <p>Copyright © CatFish</p> 
+            </div>
+            <div class="column"> 
+                <h4 class="bd-footer-title has-text-weight-medium has-text-left has-text-white">Schedule</h4> 
+                <p class="bd-footer-link has-text-left has-text-white"> 
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+                    Nullam sed sem ac lorem tincidunt placerat vel quis diam.
+                </p> 
+            </div> 
+            <div class="column"> 
+                <h4 class="bd-footer-title has-text-weight-medium has-text-justify has-text-white">Address</h4> 
+                <p class="bd-footer-link has-text-white"> 
+                    MAI 33, Antananarivo 105, Madagaskar
+                </p> 
+            </div> 
+            <div class="column"> 
+                <h4 class="bd-footer-title has-text-weight-medium has-text-justify has-text-white">Contact us</h4> 
+                <p class="bd-footer-link has-text-white"> 
+                    <p class="has-text-white">ContactUs@example.com</p>
+                    <p class="has-text-white">+261 34 05 024 91 </p>
+                    <a href="https://www.sancristobal.mg/">Web Page</a>
+                </p> 
+            </div> 
+        </div> 
     </div> 
-</div> 
 
 <?php
 include 'pma.php';
@@ -161,24 +126,14 @@ if ($result->num_rows > 0) {
 $conn->close();
 ?>
 
-<script>
-const scheduleData = <?php echo json_encode($scheduleData); ?>;
-</script>
-
-<table>
-    <thead>
-    </thead>
-    <tbody id="schedule-body"></tbody>
-</table>
-
 <div id="classModal" class="modal">
   <div class="modal-background"></div>
   <div class="modal-card">
     <header style="background-color:black; border:none;" class="modal-card-head">
-      <p  style="color:white;" class="modal-card-title" id="modal-subject">Zajęcia</p>
+      <p style="color:white;" class="modal-card-title" id="modal-subject">Zajęcia</p>
       <button class="delete" aria-label="close" onclick="closeModal()"></button>
     </header>
-    <section  style="background-color:#3B1C32; color:white;" class="modal-card-body">
+    <section style="background-color:#3B1C32; color:white;" class="modal-card-body">
       <p><strong style="color:white;">Godzina:</strong> <span id="modal-time"></span></p>
       <p><strong style="color:white;">Typ zajęć:</strong> <span id="modal-type"></span></p>
       <p><strong style="color:white;">Wykładowca:</strong> <span id="modal-teacher"></span></p>
@@ -186,53 +141,63 @@ const scheduleData = <?php echo json_encode($scheduleData); ?>;
       <p><strong style="color:white;">Numer sali:</strong> <span id="modal-roomNumber"></span></p> 
     </section>
     <footer style="background-color:black; border:none;" class="modal-card-foot">
-      <button  style="background-color:#A64D79; border:none; color:black;"class="button" onclick="closeModal()">Zamknij</button>
+      <button style="background-color:#A64D79; border:none; color:black;" class="button" onclick="closeModal()">Zamknij</button>
     </footer>
   </div>
 </div>
 
-
-
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    setupWeekNavigation();
-    generateTable();
-    fetchSchedule();
-});
-
-let currentWeekStart = getMonday(new Date());
-
-function setupWeekNavigation() {
-    const weekPicker = document.getElementById("week-picker");
-    const prevWeekBtn = document.getElementById("prev-week");
-    const nextWeekBtn = document.getElementById("next-week");
-
-    weekPicker.value = formatDate(currentWeekStart);
-
-    prevWeekBtn.addEventListener("click", () => changeWeek(-7));
-    nextWeekBtn.addEventListener("click", () => changeWeek(7));
-    weekPicker.addEventListener("change", (e) => {
-        currentWeekStart = getMonday(new Date(e.target.value));
-        fetchSchedule();
-    });
+let currentWeekStart = getUrlParam("week") ? getMonday(new Date(getUrlParam("week"))) : getMonday(new Date());
+function getMonday(date) {
+    const d = new Date(date);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    d.setDate(diff);
+    d.setHours(0, 0, 0, 0);
+    return d;
 }
 
-function changeWeek(days) {
-    currentWeekStart.setDate(currentWeekStart.getDate() + days);
-    document.getElementById("week-picker").value = formatDate(currentWeekStart);
-    fetchSchedule();
-}
 
 function formatDate(date) {
     return date.toISOString().split("T")[0];
 }
 
-function getMonday(date) {
-    let d = new Date(date);
-    let day = d.getDay();
-    let diff = d.getDate() - day + (day === 0 ? -6 : 1);
-    return new Date(d.setDate(diff));
+function getUrlParam(param) {
+    const url = new URL(window.location.href);
+    return url.searchParams.get(param);
 }
+
+const scheduleData = <?php echo json_encode($scheduleData); ?>;
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const weekPicker = document.getElementById("week-picker");
+    const prevBtn = document.getElementById("prev-week");
+    const nextBtn = document.getElementById("next-week");
+
+    weekPicker.value = formatDate(currentWeekStart);
+
+    prevBtn.addEventListener("click", () => {
+        const newDate = new Date(currentWeekStart);
+        newDate.setDate(newDate.getDate() - 7);
+        window.location.href = `?week=${formatDate(getMonday(newDate))}`;
+    });
+
+    nextBtn.addEventListener("click", () => {
+    const newDate = new Date(currentWeekStart);
+    newDate.setDate(newDate.getDate() + 14);
+    window.location.href = `?week=${formatDate(getMonday(newDate))}`;
+});
+
+
+    weekPicker.addEventListener("change", (e) => {
+        const selected = new Date(e.target.value);
+        window.location.href = `?week=${formatDate(getMonday(selected))}`;
+    });
+
+    generateTable();
+    fetchSchedule();
+});
 
 function generateTable() {
     const tableBody = document.getElementById("schedule-body");
@@ -263,7 +228,7 @@ function generateTable() {
     }
 }
 
-    function fetchSchedule() {
+function fetchSchedule() {
     let startOfWeek = new Date(currentWeekStart);
     let weekDates = [];
     for (let i = 0; i < 7; i++) {
@@ -293,8 +258,8 @@ function generateTable() {
             let startCell = document.querySelector(`.schedule-slot[data-hour="${startSlot.toFixed(2)}"][data-day="${dayIndex}"]`);
             if (startCell) {
                 startCell.innerHTML = `<strong style="color:black;">${item.subject}</strong><br><small>${item.startTime} - ${item.endTime}</small><br><small>${item.building}<br>${item.roomNumber}</small>`;
-                startCell.style.backgroundColor = "#A64D79";  
-                startCell.style.color = "black";  
+                startCell.style.backgroundColor = "#A64D79";
+                startCell.style.color = "black";
                 startCell.setAttribute("rowspan", totalRows);
 
                 startCell.dataset.subject = item.subject;
@@ -302,8 +267,8 @@ function generateTable() {
                 startCell.dataset.endTime = item.endTime;
                 startCell.dataset.type = item.type;
                 startCell.dataset.teacher = item.teacher;
-                startCell.dataset.building = item.building; 
-                startCell.dataset.roomNumber = item.roomNumber; 
+                startCell.dataset.building = item.building;
+                startCell.dataset.roomNumber = item.roomNumber;
 
                 for (let i = 1; i < totalRows; i++) {
                     let nextCell = document.querySelector(`.schedule-slot[data-hour="${(startSlot + (i * 0.25)).toFixed(2)}"][data-day="${dayIndex}"]`);
@@ -317,30 +282,21 @@ function generateTable() {
                     document.getElementById("modal-time").textContent = `${startCell.dataset.startTime} - ${startCell.dataset.endTime}`;
                     document.getElementById("modal-type").textContent = startCell.dataset.type;
                     document.getElementById("modal-teacher").textContent = startCell.dataset.teacher;
-                    document.getElementById("modal-building").textContent = startCell.dataset.building; 
-                    document.getElementById("modal-roomNumber").textContent = startCell.dataset.roomNumber; 
+                    document.getElementById("modal-building").textContent = startCell.dataset.building;
+                    document.getElementById("modal-roomNumber").textContent = startCell.dataset.roomNumber;
                     openModal();
                 });
-
             }
         });
 }
 
+function openModal() {
+    document.getElementById("classModal").classList.add("is-active");
+}
 
-        function openModal() {
-            document.getElementById("classModal").classList.add("is-active");
-                }
-
-        function closeModal() {
-            document.getElementById("classModal").classList.remove("is-active");
-        }
-
-
-
+function closeModal() {
+    document.getElementById("classModal").classList.remove("is-active");
+}
 </script>
-
 </body>
 </html>
-
-
-
