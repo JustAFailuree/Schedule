@@ -209,5 +209,138 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['update_user_id'])) {
 }
 $conn->close();
 ?>
+
+<?php
+include 'pma.php';
+
+// === USUWANIE klasy ===
+if (isset($_GET['delete_class_id'])) {
+    $stmt = $conn->prepare("DELETE FROM classes WHERE class_ID = ?");
+    $stmt->bind_param("i", $_GET['delete_class_id']);
+    $stmt->execute();
+    $stmt->close();
+    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+    exit();
+}
+
+// === AKTUALIZACJA klasy ===
+if (isset($_POST['update_class_id'])) {
+    $stmt = $conn->prepare("UPDATE classes SET 
+        class_name = ?, Data_zajec = ?, Godzina_rozpoczecia = ?, Godzina_zakonczenia = ?, Typ_zajec = ?, 
+        id_kierunku = ?, budynek = ?, numer_sali = ? WHERE class_ID = ?");
+    $stmt->bind_param("sssssisii",
+        $_POST['class_name'], $_POST['Data_zajec'], $_POST['Godzina_rozpoczecia'],
+        $_POST['Godzina_zakonczenia'], $_POST['Typ_zajec'], $_POST['id_kierunku'],
+        $_POST['budynek'], $_POST['numer_sali'], $_POST['update_class_id']
+    );
+    $stmt->execute();
+    $stmt->close();
+    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+    exit();
+}
+
+// === LISTA klas ===
+echo "<h2>Lista zajęć</h2>";
+$result = $conn->query("SELECT c.*, k.nazwa_kierunku FROM classes c LEFT JOIN kierunki k ON c.id_kierunku = k.id_kierunku");
+
+echo "<table border='1' cellpadding='8'><tr>
+    <th>ID</th><th>Nazwa</th><th>Data</th><th>Początek</th><th>Koniec</th><th>Typ</th>
+    <th>Kierunek</th><th>Budynek</th><th>Sala</th><th>Akcje</th></tr>";
+
+while ($row = $result->fetch_assoc()) {
+    echo "<tr>";
+    if (isset($_GET['edit_class_id']) && $_GET['edit_class_id'] == $row['class_ID']) {
+        echo "<form method='post'>";
+        echo "<td>{$row['class_ID']}</td>";
+        echo "<td><input name='class_name' value='" . htmlspecialchars($row['class_name']) . "'></td>";
+        echo "<td><input type='date' name='Data_zajec' value='{$row['Data_zajec']}'></td>";
+        echo "<td><input type='time' name='Godzina_rozpoczecia' value='{$row['Godzina_rozpoczecia']}'></td>";
+        echo "<td><input type='time' name='Godzina_zakonczenia' value='{$row['Godzina_zakonczenia']}'></td>";
+        echo "<td><input name='Typ_zajec' value='{$row['Typ_zajec']}'></td>";
+
+        // Select kierunek
+        $kierunki = $conn->query("SELECT * FROM kierunki");
+        echo "<td><select name='id_kierunku'>";
+        while ($k = $kierunki->fetch_assoc()) {
+            $sel = $row['id_kierunku'] == $k['id_kierunku'] ? "selected" : "";
+            echo "<option value='{$k['id_kierunku']}' $sel>{$k['nazwa_kierunku']}</option>";
+        }
+        echo "</select></td>";
+
+        echo "<td><input name='budynek' value='{$row['budynek']}'></td>";
+        echo "<td><input name='numer_sali' value='{$row['numer_sali']}'></td>";
+
+        echo "<td>
+            <input type='hidden' name='update_class_id' value='{$row['class_ID']}'>
+            <button type='submit'>Zapisz</button> <a href='?'>Anuluj</a>
+        </td>";
+        echo "</form>";
+    } else {
+        echo "<td>{$row['class_ID']}</td>";
+        echo "<td>" . htmlspecialchars($row['class_name']) . "</td>";
+        echo "<td>{$row['Data_zajec']}</td>";
+        echo "<td>{$row['Godzina_rozpoczecia']}</td>";
+        echo "<td>{$row['Godzina_zakonczenia']}</td>";
+        echo "<td>{$row['Typ_zajec']}</td>";
+        echo "<td>{$row['nazwa_kierunku']}</td>";
+        echo "<td>{$row['budynek']}</td>";
+        echo "<td>{$row['numer_sali']}</td>";
+        echo "<td>
+            <a href='?edit_class_id={$row['class_ID']}'>Edytuj</a> |
+            <a href='?delete_class_id={$row['class_ID']}' onclick=\"return confirm('Usunąć zajęcia?')\">Usuń</a>
+        </td>";
+    }
+    echo "</tr>";
+}
+echo "</table>";
+?>
+
+<h2>Dodaj nowe zajęcia</h2>
+<form method="post">
+    <input type="text" name="class_name" placeholder="Nazwa zajęć" required><br>
+    <input type="date" name="Data_zajec" required><br>
+    <input type="time" name="Godzina_rozpoczecia" required><br>
+    <input type="time" name="Godzina_zakonczenia" required><br>
+    <input type="text" name="Typ_zajec" placeholder="Typ zajęć" required><br>
+
+    <select name="id_kierunku" required>
+        <option value="">--Wybierz kierunek--</option>
+        <?php
+        $res = $conn->query("SELECT * FROM kierunki");
+        while ($r = $res->fetch_assoc()) {
+            echo "<option value='{$r['id_kierunku']}'>" . htmlspecialchars($r['nazwa_kierunku']) . "</option>";
+        }
+        ?>
+    </select><br>
+
+    <input type="text" name="budynek" placeholder="Budynek" required><br>
+    <input type="text" name="numer_sali" placeholder="Numer sali" required><br>
+    <button type="submit" name="add_class">Dodaj zajęcia</button>
+</form>
+
+<?php
+// DODAWANIE klasy
+if (isset($_POST['add_class'])) {
+    $stmt = $conn->prepare("INSERT INTO classes (
+        class_name, Data_zajec, Godzina_rozpoczecia, Godzina_zakonczenia, Typ_zajec,
+        id_kierunku, budynek, numer_sali
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssisss",
+        $_POST['class_name'], $_POST['Data_zajec'], $_POST['Godzina_rozpoczecia'],
+        $_POST['Godzina_zakonczenia'], $_POST['Typ_zajec'], $_POST['id_kierunku'],
+        $_POST['budynek'], $_POST['numer_sali']
+    );
+    if ($stmt->execute()) {
+        echo "Dodano zajęcia.";
+    } else {
+        echo "Błąd: " . $stmt->error;
+    }
+    $stmt->close();
+    header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
+    exit();
+}
+$conn->close();
+?>
+
 </body>
 </html>
