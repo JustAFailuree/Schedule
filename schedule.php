@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     prevBtn.addEventListener("click", () => {
         const newDate = new Date(currentWeekStart);
-        newDate.setDate(newDate.getDate() - 7);
+        newDate.setDate(newDate.getDate());
         window.location.href = `?week=${formatDate(getMonday(newDate))}`;
     });
 
