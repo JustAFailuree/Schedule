@@ -203,7 +203,7 @@ function generateTable() {
     const tableBody = document.getElementById("schedule-body");
     tableBody.innerHTML = "";
 
-    for (let hour = 7; hour < 22; hour++) {
+    for (let hour = 7; hour < 20; hour++) {
         for (let quarter = 0; quarter < 4; quarter++) {
             let row = document.createElement("tr");
 
